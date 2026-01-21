@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int main()
+{
+    char s[] = "tree";
+    int freq[256] = {0};
+    int i;
+
+    for (i = 0; s[i] != '\0'; i++)
+    {
+        freq[(int)s[i]]++;
+    }
+
+    for (i = 0; s[i] != '\0'; i++)
+    {
+        if (freq[(int)s[i]] != 0)
+        {
+            printf("%c->%d", s[i], freq[(int)s[i]]);
+            freq[(int)s[i]] = 0;   
+            if (s[i + 1] != '\0')
+                printf(", ");
+        }
+    }
+
+    return 0;
+}
