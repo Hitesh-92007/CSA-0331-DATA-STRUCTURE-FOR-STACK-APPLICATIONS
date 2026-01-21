@@ -1,0 +1,38 @@
+#include <stdio.h>
+
+int main()
+{
+    char s[] = "tree";
+    int i, j;
+    char temp;
+    int startIndex = -1;
+
+   
+    for (i = 0; s[i] != '\0'; i++)
+    {
+        for (j = i + 1; s[j] != '\0'; j++)
+        {
+            if (s[i] > s[j])
+            {
+                temp = s[i];
+                s[i] = s[j];
+                s[j] = temp;
+            }
+        }
+    }
+
+    for (i = 0; s[i + 1] != '\0'; i++)
+    {
+        if (s[i] == s[i + 1])
+        {
+            startIndex = i;
+            break;
+        }
+    }
+
+    printf("Sorted string: \"%s\"\n", s);
+    printf("starting index %d", startIndex);
+
+    return 0;
+}
+
