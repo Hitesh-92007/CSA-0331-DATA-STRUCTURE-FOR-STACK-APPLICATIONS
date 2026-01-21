@@ -1,0 +1,104 @@
+#include <stdio.h>
+
+#define MAX_NODES 100
+
+
+typedef struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+} TreeNode;
+
+
+TreeNode nodes[MAX_NODES];
+int nodeCount = 0;
+
+
+TreeNode* createNode(int val) {
+    if (nodeCount >= MAX_NODES) return NULL; 
+    nodes[nodeCount].val = val;
+    nodes[nodeCount].left = NULL;
+    nodes[nodeCount].right = NULL;
+    return &nodes[nodeCount++];
+}
+
+
+int search(int* inorder, int start, int end, int value) {
+    int i;
+    for (i = start; i <= end; i++) {
+        if (inorder[i] == value)
+            return i;
+    }
+    return -1;
+}
+
+
+TreeNode* buildTreeRec(int* preorder, int* inorder, int inStart, int inEnd, int* preIndex) {
+    if (inStart > inEnd)
+        return NULL;
+
+    int rootVal = preorder[*preIndex];
+    (*preIndex)++;
+
+    TreeNode* root = createNode(rootVal);
+
+    if (inStart == inEnd)
+        return root;
+
+    int inIndex = search(inorder, inStart, inEnd, rootVal);
+
+    root->left = buildTreeRec(preorder, inorder, inStart, inIndex - 1, preIndex);
+    root->right = buildTreeRec(preorder, inorder, inIndex + 1, inEnd, preIndex);
+
+    return root;
+}
+
+
+TreeNode* buildTree(int* preorder, int* inorder, int n) {
+    int preIndex = 0;
+    nodeCount = 0; 
+    return buildTreeRec(preorder, inorder, 0, n - 1, &preIndex);
+}
+
+
+void kthSmallest(TreeNode* root, int k, int* count, int* result) {
+    if (root == NULL) return;
+
+    kthSmallest(root->left, k, count, result);
+
+    (*count)++;
+    if (*count == k) {
+        *result = root->val;
+        return;
+    }
+
+    kthSmallest(root->right, k, count, result);
+}
+
+
+int main() {
+
+    int preorder[] = {20, 8, 4, 12, 10, 14, 22};
+    int inorder[]  = {4, 8, 10, 12, 14, 20, 22};
+    int n = sizeof(preorder)/sizeof(preorder[0]);
+
+    TreeNode* root = buildTree(preorder, inorder, n);
+
+    int k, result, count;
+
+   
+    k = 3;
+    count = 0;
+    result = -1;
+    kthSmallest(root, k, &count, &result);
+    printf("The %dth smallest element is: %d\n", k, result);
+
+  
+    k = 5;
+    count = 0;
+    result = -1;
+    kthSmallest(root, k, &count, &result);
+    printf("The %dth smallest element is: %d\n", k, result);
+
+    return 0;
+}
